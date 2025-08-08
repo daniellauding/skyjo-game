@@ -76,8 +76,8 @@ h3 {
     width: 40px;
     height: 40px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.2);
-    border: 2px solid rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.3);
+    border: 2px solid rgba(255,255,255,0.5);
     color: white;
     font-size: 1.5rem;
     font-weight: bold;
@@ -86,11 +86,13 @@ h3 {
     display: flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
 }
 
 .help-btn:hover {
-    background: rgba(255,255,255,0.3);
+    background: rgba(255,255,255,0.5);
     transform: scale(1.1);
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
 }
 
 /* Buttons */
@@ -213,7 +215,15 @@ input[type="text"]::placeholder {
     cursor: pointer;
     border: 3px solid transparent;
     transition: all 0.3s ease;
+    position: relative;
 }
+
+.color-option[data-color="#FF6B6B"] { background-color: #FF6B6B; }
+.color-option[data-color="#4ECDC4"] { background-color: #4ECDC4; }
+.color-option[data-color="#45B7D1"] { background-color: #45B7D1; }
+.color-option[data-color="#96CEB4"] { background-color: #96CEB4; }
+.color-option[data-color="#FFEAA7"] { background-color: #FFEAA7; }
+.color-option[data-color="#DDA0DD"] { background-color: #DDA0DD; }
 
 .color-option:hover {
     transform: scale(1.1);

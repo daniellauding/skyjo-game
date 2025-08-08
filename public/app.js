@@ -16,17 +16,37 @@ class SkyjoApp {
     }
 
     init() {
-        this.connectSocket();
-        this.setupEventListeners();
-        this.checkURLParams();
-        this.showScreen('mainMenu');
+        try {
+            console.log('Initializing Skyjo app...');
+            this.connectSocket();
+            this.setupEventListeners();
+            this.checkURLParams();
+            this.showScreen('mainMenu');
+            console.log('Skyjo app initialized successfully');
+        } catch (error) {
+            console.error('Error initializing app:', error);
+        }
     }
 
     connectSocket() {
-        // For Netlify Functions, Socket.IO connects to the serverless function endpoint
-        this.socket = io('/', {
-            transports: ['websocket', 'polling']
-        });
+        try {
+            console.log('Connecting to Socket.IO...');
+            // For Netlify Functions, Socket.IO connects to the serverless function endpoint
+            this.socket = io('/', {
+                transports: ['polling', 'websocket'], // Try polling first for serverless
+                forceNew: true,
+                timeout: 20000,
+                autoConnect: true
+            });
+        } catch (error) {
+            console.error('Error connecting to socket:', error);
+            // Fallback: still setup UI without socket for local testing
+            this.socket = { 
+                on: () => {}, 
+                emit: () => console.warn('Socket not connected'),
+                id: 'offline'
+            };
+        }
         
         this.socket.on('connect', () => {
             console.log('Connected to server');
@@ -128,10 +148,11 @@ class SkyjoApp {
     }
 
     setupEventListeners() {
+        console.log('Setting up event listeners...');
+        
         // Main menu buttons
         const hostBtn = document.getElementById('hostGameBtn');
         const joinBtn = document.getElementById('joinGameBtn');
-        const rulesBtn = document.getElementById('rulesBtn');
 
         if (hostBtn) {
             hostBtn.addEventListener('click', () => {
@@ -151,14 +172,6 @@ class SkyjoApp {
             console.error('Join Game button not found!');
         }
 
-        if (rulesBtn) {
-            rulesBtn.addEventListener('click', () => {
-                console.log('Game Rules button clicked!');
-                this.showScreen('rulesScreen');
-            });
-        } else {
-            console.error('Game Rules button not found!');
-        }
 
         // Host game screen
         document.getElementById('createRoomBtn').addEventListener('click', () => {
@@ -191,10 +204,6 @@ class SkyjoApp {
             this.copyRoomCode();
         });
 
-        // Rules screen
-        document.getElementById('backFromRulesBtn').addEventListener('click', () => {
-            this.showScreen('mainMenu');
-        });
 
         // Game screen actions
         document.getElementById('drawFromDeckBtn').addEventListener('click', () => {
