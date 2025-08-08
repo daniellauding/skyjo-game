@@ -11,6 +11,8 @@ class SkyjoApp {
         this.scoreHistory = this.loadScoreHistory();
         this.currentRoomCode = null;
         this.currentRoomPassword = null;
+        this.gameStartTime = null;
+        this.timerInterval = null;
         
         this.init();
     }
@@ -97,6 +99,7 @@ class SkyjoApp {
 
         this.socket.on('gameStarted', (data) => {
             this.gameState = data.gameState;
+            this.startGameTimer();
             this.showGame();
         });
 
@@ -137,6 +140,7 @@ class SkyjoApp {
 
         this.socket.on('gameEnded', (data) => {
             this.gameState = data.gameState;
+            this.stopGameTimer();
             this.updateGameScreen();
             this.saveScoreHistory(data);
             this.showToast(`Game Over! ${data.winner.name} wins!`, 'success');
@@ -374,7 +378,7 @@ class SkyjoApp {
 
     updatePlayerGrid() {
         const currentPlayer = this.gameState.players.find(p => p.id === this.playerId);
-        if (!currentPlayer) return;
+        if (!currentPlayer || !currentPlayer.grid || !Array.isArray(currentPlayer.grid)) return;
 
         const cardGrid = document.getElementById('cardGrid');
         cardGrid.innerHTML = '';
@@ -518,6 +522,7 @@ class SkyjoApp {
 
     leaveRoom() {
         this.socket.emit('leaveRoom');
+        this.stopGameTimer();
         this.gameState = null;
         this.playerId = null;
         this.showScreen('mainMenu');
@@ -898,6 +903,37 @@ class SkyjoApp {
             document.body.removeChild(textArea);
             this.showToast('Share link copied!', 'success');
         });
+    }
+
+    startGameTimer() {
+        this.gameStartTime = Date.now();
+        this.updateGameTimer();
+        this.timerInterval = setInterval(() => {
+            this.updateGameTimer();
+        }, 1000);
+    }
+
+    stopGameTimer() {
+        if (this.timerInterval) {
+            clearInterval(this.timerInterval);
+            this.timerInterval = null;
+        }
+    }
+
+    updateGameTimer() {
+        if (!this.gameStartTime) return;
+        
+        const elapsed = Date.now() - this.gameStartTime;
+        const hours = Math.floor(elapsed / 3600000);
+        const minutes = Math.floor((elapsed % 3600000) / 60000);
+        const seconds = Math.floor((elapsed % 60000) / 1000);
+        
+        const timeString = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+        
+        const timerElement = document.getElementById('gameTimer');
+        if (timerElement) {
+            timerElement.textContent = timeString;
+        }
     }
 }
 
