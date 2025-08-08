@@ -1,0 +1,960 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    min-height: 100vh;
+    color: #333;
+}
+
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/* Screen Management */
+.screen {
+    display: none;
+    min-height: 100vh;
+    padding: 20px;
+}
+
+.screen.active {
+    display: block;
+}
+
+/* Typography */
+h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    text-align: center;
+    color: #fff;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+    margin-bottom: 10px;
+}
+
+h2 {
+    font-size: 2rem;
+    font-weight: 500;
+    text-align: center;
+    color: #fff;
+    margin-bottom: 30px;
+}
+
+h3 {
+    font-size: 1.5rem;
+    font-weight: 500;
+    color: #333;
+    margin-bottom: 15px;
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    text-align: center;
+    color: #f0f0f0;
+    margin-bottom: 40px;
+    font-weight: 300;
+}
+
+/* Header with help button */
+.header-section {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+.help-btn {
+    position: absolute;
+    right: 0;
+    top: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    border: 2px solid rgba(255,255,255,0.3);
+    color: white;
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.help-btn:hover {
+    background: rgba(255,255,255,0.3);
+    transform: scale(1.1);
+}
+
+/* Buttons */
+.btn {
+    display: inline-block;
+    padding: 15px 30px;
+    border: none;
+    border-radius: 10px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+    text-align: center;
+    min-width: 150px;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.btn.primary {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: white;
+}
+
+.btn.secondary {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: white;
+}
+
+.btn.tertiary {
+    background: rgba(255,255,255,0.2);
+    color: white;
+    border: 2px solid rgba(255,255,255,0.3);
+}
+
+.btn.small {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    min-width: auto;
+}
+
+/* Menu Buttons */
+.menu-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    align-items: center;
+    max-width: 300px;
+    margin: 0 auto;
+}
+
+.button-group {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+    margin-top: 30px;
+}
+
+/* Forms */
+.form-group {
+    margin-bottom: 25px;
+}
+
+label {
+    display: block;
+    margin-bottom: 8px;
+    color: #fff;
+    font-weight: 500;
+}
+
+input[type="text"],
+input[type="number"] {
+    width: 100%;
+    padding: 15px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+    font-size: 1rem;
+    transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+    outline: none;
+    border-color: #ff6b6b;
+    background: rgba(255,255,255,0.2);
+}
+
+input[type="text"]::placeholder {
+    color: rgba(255,255,255,0.7);
+}
+
+/* Color Picker */
+.color-picker {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.color-option {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    border: 3px solid transparent;
+    transition: all 0.3s ease;
+}
+
+.color-option:hover {
+    transform: scale(1.1);
+}
+
+.color-option.selected {
+    border-color: #fff;
+    transform: scale(1.2);
+}
+
+/* Lobby */
+.lobby-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.room-info {
+    background: rgba(255,255,255,0.1);
+    padding: 15px;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.room-info span {
+    color: #fff;
+    font-size: 1.1rem;
+}
+
+.players-list {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 25px;
+    margin-bottom: 30px;
+}
+
+.players-list h3 {
+    color: #fff;
+    margin-bottom: 20px;
+}
+
+.player-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 10px;
+    margin-bottom: 10px;
+}
+
+.player-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-weight: bold;
+    font-size: 1.2rem;
+}
+
+.player-name {
+    color: #fff;
+    font-size: 1.1rem;
+    font-weight: 500;
+    flex: 1;
+}
+
+.host-badge {
+    background: linear-gradient(135deg, #ffd700, #ffed4e);
+    color: #333;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+/* Game Screen */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.game-info {
+    display: flex;
+    gap: 30px;
+    color: #fff;
+    font-weight: 500;
+}
+
+.deck-area {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.draw-pile,
+.discard-pile {
+    position: relative;
+    cursor: pointer;
+}
+
+.draw-pile:hover,
+.discard-pile:hover {
+    transform: translateY(-5px);
+}
+
+.deck-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: #ff6b6b;
+    color: white;
+    border-radius: 50%;
+    width: 25px;
+    height: 25px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    font-weight: bold;
+}
+
+/* Cards */
+.card {
+    width: 60px;
+    height: 90px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border: 2px solid rgba(255,255,255,0.3);
+}
+
+.card.back {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: #fff;
+}
+
+.card.back::before {
+    content: "🎯";
+    font-size: 1.5rem;
+}
+
+.card:not(.back) {
+    background: #fff;
+    color: #333;
+}
+
+.card.negative {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+    color: #fff;
+}
+
+.card.zero {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+    color: #fff;
+}
+
+.card.positive {
+    background: #fff;
+    color: #333;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+}
+
+.card.selectable {
+    border-color: #ffd700;
+    box-shadow: 0 0 10px rgba(255,215,0,0.5);
+}
+
+.card.selected {
+    transform: translateY(-10px);
+    border-color: #ffd700;
+    box-shadow: 0 5px 20px rgba(255,215,0,0.7);
+}
+
+/* Game Content */
+.game-content {
+    display: flex;
+    gap: 30px;
+    margin-bottom: 30px;
+}
+
+.player-grid {
+    flex: 2;
+}
+
+.grid-container {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 25px;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 15px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.players-sidebar {
+    flex: 1;
+    min-width: 250px;
+}
+
+.scoreboard {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 20px;
+    margin-bottom: 20px;
+}
+
+.scoreboard h3 {
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.score-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    margin-bottom: 8px;
+    background: rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: #fff;
+}
+
+.score-name {
+    font-weight: 500;
+}
+
+.score-value {
+    font-weight: bold;
+    color: #ffd700;
+}
+
+.other-players {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 20px;
+}
+
+.other-player {
+    margin-bottom: 20px;
+}
+
+.other-player-name {
+    color: #fff;
+    font-weight: 500;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.other-player-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 5px;
+}
+
+.other-player-grid .card {
+    width: 30px;
+    height: 45px;
+    font-size: 0.7rem;
+}
+
+/* Game Actions */
+.game-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+/* Rules */
+.rules-content {
+    background: rgba(255,255,255,0.1);
+    border-radius: 15px;
+    padding: 30px;
+    color: #fff;
+    line-height: 1.6;
+}
+
+.rules-content h3 {
+    color: #ffd700;
+    margin-top: 25px;
+    margin-bottom: 15px;
+}
+
+.rules-content h3:first-child {
+    margin-top: 0;
+}
+
+.rules-content ul,
+.rules-content ol {
+    padding-left: 25px;
+    margin-bottom: 20px;
+}
+
+.rules-content li {
+    margin-bottom: 8px;
+}
+
+/* Toast Notifications */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: #333;
+    color: #fff;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transform: translateX(400px);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    max-width: 300px;
+}
+
+.toast.show {
+    transform: translateX(0);
+}
+
+.toast.success {
+    background: linear-gradient(135deg, #4ecdc4, #44a08d);
+}
+
+.toast.error {
+    background: linear-gradient(135deg, #ff6b6b, #ee5a52);
+}
+
+.toast.info {
+    background: linear-gradient(135deg, #45b7d1, #3498db);
+}
+
+/* Chat Styles */
+.chat-container {
+    background: #fff;
+    border-radius: 10px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.chat-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 15px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.chat-content {
+    display: flex;
+    flex-direction: column;
+    height: 300px;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    background: #f8f9fa;
+    max-height: 240px;
+}
+
+.chat-message {
+    margin-bottom: 12px;
+}
+
+.chat-user-message .chat-header-line {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.chat-username {
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.chat-time {
+    font-size: 0.75rem;
+    color: #666;
+}
+
+.chat-text {
+    color: #333;
+    font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
+}
+
+.chat-system {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.chat-system .chat-text {
+    color: #666;
+    font-style: italic;
+    font-size: 0.85rem;
+}
+
+.chat-input-container {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #e9ecef;
+    background: white;
+    gap: 10px;
+}
+
+.chat-input-container input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    font-size: 0.9rem;
+    outline: none;
+}
+
+.chat-input-container input:focus {
+    border-color: #667eea;
+}
+
+.btn.small {
+    padding: 8px 16px;
+    font-size: 0.85rem;
+    min-width: auto;
+}
+
+.lobby-chat {
+    max-width: 500px;
+    margin: 0 auto 20px auto;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        padding: 15px;
+    }
+    
+    .chat-content {
+        height: 250px;
+    }
+    
+    .chat-messages {
+        max-height: 190px;
+        padding: 10px;
+    }
+    
+    .chat-input-container {
+        padding: 10px;
+    }
+    
+    .lobby-chat .chat-content {
+        height: 200px;
+    }
+    
+    .lobby-chat .chat-messages {
+        max-height: 140px;
+    }
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 2000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.6);
+    backdrop-filter: blur(4px);
+}
+
+.modal-content {
+    background-color: white;
+    margin: 5% auto;
+    border-radius: 15px;
+    width: 90%;
+    max-width: 600px;
+    max-height: 85vh;
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+    padding: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header h2 {
+    margin: 0;
+    font-size: 1.5rem;
+}
+
+.close {
+    color: white;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: background-color 0.3s;
+}
+
+.close:hover {
+    background-color: rgba(255,255,255,0.2);
+}
+
+.modal-body {
+    padding: 20px;
+    max-height: calc(85vh - 100px);
+    overflow-y: auto;
+}
+
+.help-section {
+    margin-bottom: 25px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+}
+
+.help-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+
+.help-section h3 {
+    color: #667eea;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.help-section p, .help-section li {
+    line-height: 1.6;
+    color: #333;
+}
+
+.help-section ul, .help-section ol {
+    margin: 10px 0;
+    padding-left: 20px;
+}
+
+.help-section li {
+    margin-bottom: 8px;
+}
+
+.card-values {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.value-item {
+    background: #f8f9fa;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+}
+
+/* Form improvements */
+.form-group small {
+    display: block;
+    margin-top: 5px;
+    color: #666;
+    font-size: 0.85rem;
+}
+
+.room-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+/* Mobile modal adjustments */
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        margin: 10% auto;
+        max-height: 90vh;
+    }
+    
+    .modal-body {
+        padding: 15px;
+        max-height: calc(90vh - 80px);
+    }
+    
+    .help-btn {
+        width: 35px;
+        height: 35px;
+        font-size: 1.3rem;
+    }
+    
+    .room-info {
+        justify-content: center;
+    }
+    
+    h1 {
+        font-size: 2.5rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .game-content {
+        flex-direction: column;
+    }
+    
+    .players-sidebar {
+        min-width: auto;
+    }
+    
+    .game-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .game-info {
+        justify-content: center;
+    }
+    
+    .card-grid {
+        gap: 10px;
+        max-width: 280px;
+    }
+    
+    .card {
+        width: 50px;
+        height: 75px;
+        font-size: 1rem;
+    }
+    
+    .lobby-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .color-picker {
+        gap: 10px;
+    }
+    
+    .color-option {
+        width: 40px;
+        height: 40px;
+    }
+    
+    .button-group {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .menu-buttons {
+        width: 100%;
+    }
+    
+    .btn {
+        width: 100%;
+        max-width: 250px;
+    }
+}
+
+@media (max-width: 480px) {
+    .screen {
+        padding: 10px;
+    }
+    
+    .container {
+        padding: 10px;
+    }
+    
+    h1 {
+        font-size: 2rem;
+    }
+    
+    .card-grid {
+        max-width: 220px;
+        gap: 8px;
+    }
+    
+    .card {
+        width: 40px;
+        height: 60px;
+        font-size: 0.9rem;
+    }
+    
+    .game-header {
+        padding: 15px;
+    }
+    
+    .game-info {
+        gap: 15px;
+        font-size: 0.9rem;
+    }
+    
+    .rules-content {
+        padding: 20px;
+        font-size: 0.9rem;
+    }
+}
