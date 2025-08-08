@@ -31,9 +31,10 @@ class SkyjoApp {
     connectSocket() {
         try {
             console.log('Connecting to Socket.IO...');
-            // For Netlify Functions, Socket.IO connects to the serverless function endpoint
-            this.socket = io('/', {
-                transports: ['polling', 'websocket'], // Try polling first for serverless
+            // For development, connect to localhost:3000
+            // For production, this will connect to the deployed server
+            this.socket = io('http://localhost:3000', {
+                transports: ['polling', 'websocket'],
                 forceNew: true,
                 timeout: 20000,
                 autoConnect: true
