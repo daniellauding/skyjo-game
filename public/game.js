@@ -137,7 +137,7 @@ class SkyjoGame {
     }
 
     canStartGame() {
-        return this.players.size >= 2 && this.players.size <= this.maxPlayers;
+        return this.players.size >= 1 && this.players.size <= this.maxPlayers;
     }
 
     startNewRound() {

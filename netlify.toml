@@ -1,16 +1,5 @@
 [build]
   publish = "public"
-  functions = "netlify/functions"
-
-[dev]
-  framework = "#custom"
-  command = "node server.js"
-  targetPort = 3000
-
-[[redirects]]
-  from = "/socket.io/*"
-  to = "/.netlify/functions/socket"
-  status = 200
 
 [[redirects]]
   from = "/*"

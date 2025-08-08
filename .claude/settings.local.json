@@ -14,7 +14,8 @@
       "Bash(npx netlify:*)",
       "Bash(npm run dev:*)",
       "Bash(pkill:*)",
-      "Bash(node server.js)"
+      "Bash(node server.js)",
+      "Bash(echo:*)"
     ],
     "deny": []
   }

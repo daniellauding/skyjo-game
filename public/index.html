@@ -183,6 +183,24 @@
 
     </div>
 
+    <!-- Floating Chat Sidebar -->
+    <div id="chatSidebar" class="chat-sidebar collapsed">
+        <div class="chat-sidebar-toggle" id="chatToggle">
+            <span class="chat-icon">💬</span>
+        </div>
+        <div class="chat-sidebar-content">
+            <div class="chat-sidebar-header">
+                <h3>Chat</h3>
+                <button class="close-chat" id="closeChatSidebar">&times;</button>
+            </div>
+            <div class="chat-sidebar-messages" id="sidebarChatMessages"></div>
+            <div class="chat-sidebar-input">
+                <input type="text" id="sidebarChatInput" placeholder="Type a message..." maxlength="200">
+                <button id="sendSidebarChatBtn" class="btn primary small">Send</button>
+            </div>
+        </div>
+    </div>
+
     <!-- Toast notifications -->
     <div id="toast" class="toast"></div>
 
@@ -254,7 +272,7 @@
     </div>
 
     <!-- Scripts -->
-    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
     <script src="game.js"></script>
     <script src="app.js"></script>
 </body>

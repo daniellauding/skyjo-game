@@ -31,10 +31,10 @@ class SkyjoApp {
     connectSocket() {
         try {
             console.log('Connecting to Socket.IO...');
-            // Auto-detect if running locally or on Netlify
+            // Auto-detect if running locally or on production
             const socketUrl = window.location.hostname === 'localhost' 
                 ? 'http://localhost:3000' 
-                : window.location.origin;
+                : 'https://skyjo-game-production.up.railway.app';
             
             console.log(`Connecting to: ${socketUrl}`);
             this.socket = io(socketUrl, {
@@ -338,7 +338,7 @@ class SkyjoApp {
 
         // Enable/disable start button
         const currentPlayer = this.gameState.players.find(p => p.id === this.playerId);
-        const canStart = currentPlayer?.isHost && this.gameState.players.length >= 2;
+        const canStart = currentPlayer?.isHost && this.gameState.players.length >= 1;
         startGameBtn.disabled = !canStart;
     }
 
@@ -594,6 +594,54 @@ class SkyjoApp {
                 }
             });
         }
+
+        // Chat sidebar event listeners
+        const chatToggle = document.getElementById('chatToggle');
+        const closeChatSidebar = document.getElementById('closeChatSidebar');
+        const chatSidebar = document.getElementById('chatSidebar');
+        const sidebarChatInput = document.getElementById('sidebarChatInput');
+        const sendSidebarChatBtn = document.getElementById('sendSidebarChatBtn');
+
+        if (chatToggle) {
+            chatToggle.addEventListener('click', () => {
+                this.toggleChatSidebar();
+            });
+        }
+
+        if (closeChatSidebar) {
+            closeChatSidebar.addEventListener('click', () => {
+                this.closeChatSidebar();
+            });
+        }
+
+        if (sidebarChatInput) {
+            sidebarChatInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter' && sidebarChatInput.value.trim()) {
+                    this.sendChatMessage(sidebarChatInput.value.trim(), this.currentScreen === 'lobbyScreen' ? 'lobby' : 'game');
+                    sidebarChatInput.value = '';
+                }
+            });
+        }
+
+        if (sendSidebarChatBtn) {
+            sendSidebarChatBtn.addEventListener('click', () => {
+                const message = sidebarChatInput.value.trim();
+                if (message) {
+                    this.sendChatMessage(message, this.currentScreen === 'lobbyScreen' ? 'lobby' : 'game');
+                    sidebarChatInput.value = '';
+                }
+            });
+        }
+    }
+
+    toggleChatSidebar() {
+        const chatSidebar = document.getElementById('chatSidebar');
+        chatSidebar.classList.toggle('collapsed');
+    }
+
+    closeChatSidebar() {
+        const chatSidebar = document.getElementById('chatSidebar');
+        chatSidebar.classList.add('collapsed');
     }
 
     sendChatMessage(message, context) {
@@ -614,22 +662,21 @@ class SkyjoApp {
             document.getElementById('lobbyChatMessages') : 
             document.getElementById('chatMessages');
         
-        if (!messagesContainer) return;
-
-        const messageDiv = document.createElement('div');
-        messageDiv.className = 'chat-message';
+        // Also display in sidebar
+        const sidebarMessagesContainer = document.getElementById('sidebarChatMessages');
         
         const timeStr = new Date(data.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
         
+        let messageHTML;
         if (data.type === 'system') {
-            messageDiv.innerHTML = `
+            messageHTML = `
                 <div class="chat-system">
                     <span class="chat-time">${timeStr}</span>
                     <span class="chat-text">${data.message}</span>
                 </div>
             `;
         } else {
-            messageDiv.innerHTML = `
+            messageHTML = `
                 <div class="chat-user-message">
                     <div class="chat-header-line">
                         <span class="chat-username" style="color: ${data.playerColor}">${data.playerName}</span>
@@ -640,8 +687,23 @@ class SkyjoApp {
             `;
         }
 
-        messagesContainer.appendChild(messageDiv);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        // Add to main chat container if it exists
+        if (messagesContainer) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'chat-message';
+            messageDiv.innerHTML = messageHTML;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }
+
+        // Add to sidebar chat container
+        if (sidebarMessagesContainer) {
+            const sidebarMessageDiv = document.createElement('div');
+            sidebarMessageDiv.className = 'chat-message';
+            sidebarMessageDiv.innerHTML = messageHTML;
+            sidebarMessagesContainer.appendChild(sidebarMessageDiv);
+            sidebarMessagesContainer.scrollTop = sidebarMessagesContainer.scrollHeight;
+        }
     }
 
     toggleChat() {

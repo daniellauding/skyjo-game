@@ -163,7 +163,7 @@ io.on('connection', (socket) => {
             }
 
             if (!room.game.canStartGame()) {
-                socket.emit('error', { message: 'Need at least 2 players to start' });
+                socket.emit('error', { message: 'Cannot start game with current player count' });
                 return;
             }
 
