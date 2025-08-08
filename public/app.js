@@ -129,17 +129,36 @@ class SkyjoApp {
 
     setupEventListeners() {
         // Main menu buttons
-        document.getElementById('hostGameBtn').addEventListener('click', () => {
-            this.showScreen('hostScreen');
-        });
+        const hostBtn = document.getElementById('hostGameBtn');
+        const joinBtn = document.getElementById('joinGameBtn');
+        const rulesBtn = document.getElementById('rulesBtn');
 
-        document.getElementById('joinGameBtn').addEventListener('click', () => {
-            this.showScreen('joinScreen');
-        });
+        if (hostBtn) {
+            hostBtn.addEventListener('click', () => {
+                console.log('Host Game button clicked!');
+                this.showScreen('hostScreen');
+            });
+        } else {
+            console.error('Host Game button not found!');
+        }
 
-        document.getElementById('rulesBtn').addEventListener('click', () => {
-            this.showScreen('rulesScreen');
-        });
+        if (joinBtn) {
+            joinBtn.addEventListener('click', () => {
+                console.log('Join Game button clicked!');
+                this.showScreen('joinScreen');
+            });
+        } else {
+            console.error('Join Game button not found!');
+        }
+
+        if (rulesBtn) {
+            rulesBtn.addEventListener('click', () => {
+                console.log('Game Rules button clicked!');
+                this.showScreen('rulesScreen');
+            });
+        } else {
+            console.error('Game Rules button not found!');
+        }
 
         // Host game screen
         document.getElementById('createRoomBtn').addEventListener('click', () => {
@@ -685,8 +704,15 @@ class SkyjoApp {
 
         if (helpBtn) {
             helpBtn.addEventListener('click', () => {
-                helpModal.style.display = 'block';
+                console.log('Help button clicked!');
+                if (helpModal) {
+                    helpModal.style.display = 'block';
+                } else {
+                    console.error('Help modal not found!');
+                }
             });
+        } else {
+            console.error('Help button not found!');
         }
 
         if (closeModal) {
