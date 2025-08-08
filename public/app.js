@@ -31,9 +31,13 @@ class SkyjoApp {
     connectSocket() {
         try {
             console.log('Connecting to Socket.IO...');
-            // For development, connect to localhost:3000
-            // For production, this will connect to the deployed server
-            this.socket = io('http://localhost:3000', {
+            // Auto-detect if running locally or on Netlify
+            const socketUrl = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3000' 
+                : window.location.origin;
+            
+            console.log(`Connecting to: ${socketUrl}`);
+            this.socket = io(socketUrl, {
                 transports: ['polling', 'websocket'],
                 forceNew: true,
                 timeout: 20000,
