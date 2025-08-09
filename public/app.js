@@ -46,8 +46,7 @@ class SkyjoApp {
                 transports: ['polling', 'websocket'],
                 forceNew: true,
                 timeout: 20000,
-                autoConnect: true,
-                withCredentials: true
+                autoConnect: true
             });
         } catch (error) {
             console.error('Error connecting to socket:', error);
