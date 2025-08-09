@@ -19,6 +19,16 @@ const io = socketIo(server, {
 // Serve static files
 app.use(express.static('public'));
 
+// API route for health check
+app.get('/api/status', (req, res) => {
+    res.json({
+        status: 'Skyjo server is running',
+        players: Array.from(gameRooms.values()).reduce((total, room) => total + room.game.players.size, 0),
+        rooms: gameRooms.size,
+        uptime: process.uptime()
+    });
+});
+
 // Game rooms storage
 const gameRooms = new Map();
 

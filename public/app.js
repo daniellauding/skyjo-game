@@ -39,11 +39,15 @@ class SkyjoApp {
                 : 'https://skyjo-game-production.up.railway.app';
             
             console.log(`Connecting to: ${socketUrl}`);
+            console.log(`Current hostname: ${window.location.hostname}`);
+            console.log(`Current URL: ${window.location.href}`);
+            
             this.socket = io(socketUrl, {
                 transports: ['polling', 'websocket'],
                 forceNew: true,
                 timeout: 20000,
-                autoConnect: true
+                autoConnect: true,
+                withCredentials: true
             });
         } catch (error) {
             console.error('Error connecting to socket:', error);
@@ -56,17 +60,25 @@ class SkyjoApp {
         }
         
         this.socket.on('connect', () => {
-            console.log('Connected to server');
+            console.log('✅ Connected to server successfully!');
+            console.log('Socket ID:', this.socket.id);
             this.playerId = this.socket.id;
+            this.showToast('Connected to server', 'success');
         });
 
-        this.socket.on('disconnect', () => {
-            console.log('Disconnected from server');
+        this.socket.on('disconnect', (reason) => {
+            console.log('❌ Disconnected from server. Reason:', reason);
             this.showToast('Disconnected from server', 'error');
         });
 
+        this.socket.on('connect_error', (error) => {
+            console.error('❌ Socket connection error:', error);
+            this.showToast('Failed to connect to game server', 'error');
+        });
+
         this.socket.on('error', (data) => {
-            this.showToast(data.message, 'error');
+            console.error('Socket error:', data);
+            this.showToast(data.message || 'Server error', 'error');
         });
 
         this.socket.on('roomCreated', (data) => {
@@ -179,6 +191,16 @@ class SkyjoApp {
             });
         } else {
             console.error('Join Game button not found!');
+        }
+
+        const soloBtn = document.getElementById('soloPlayBtn');
+        if (soloBtn) {
+            soloBtn.addEventListener('click', () => {
+                console.log('Solo Play button clicked!');
+                this.startSoloGame();
+            });
+        } else {
+            console.error('Solo Play button not found!');
         }
 
 
@@ -903,6 +925,46 @@ class SkyjoApp {
             document.body.removeChild(textArea);
             this.showToast('Share link copied!', 'success');
         });
+    }
+
+    startSoloGame() {
+        console.log('Starting solo practice game...');
+        
+        // Create a mock game state for solo play
+        this.gameState = {
+            gameState: 'playing',
+            roundNumber: 1,
+            players: [{
+                id: 'solo-player',
+                name: 'You',
+                color: '#4ECDC4',
+                isHost: true,
+                totalScore: 0,
+                grid: this.generateMockGrid()
+            }],
+            currentPlayer: {
+                id: 'solo-player',
+                name: 'You'
+            },
+            drawPileCount: 100,
+            topDiscard: 5
+        };
+        
+        this.playerId = 'solo-player';
+        this.showToast('Solo practice mode - try the game offline!', 'info');
+        this.showGame();
+    }
+
+    generateMockGrid() {
+        // Generate a 12-card grid for practice
+        const grid = [];
+        for (let i = 0; i < 12; i++) {
+            grid.push({
+                value: Math.floor(Math.random() * 15) - 2, // Random value -2 to 12
+                revealed: i < 2 // First 2 cards revealed like in real game
+            });
+        }
+        return grid;
     }
 
     startGameTimer() {
