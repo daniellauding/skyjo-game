@@ -15,7 +15,9 @@
       "Bash(npm run dev:*)",
       "Bash(pkill:*)",
       "Bash(node server.js)",
-      "Bash(echo:*)"
+      "Bash(echo:*)",
+      "WebFetch(domain:skyjo-game-production.up.railway.app)",
+      "WebFetch(domain:skyjo-spel.netlify.app)"
     ],
     "deny": []
   }
