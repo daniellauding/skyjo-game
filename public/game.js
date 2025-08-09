@@ -66,12 +66,7 @@ class SkyjoGame {
                 });
             }
             
-            // Each player reveals 2 cards initially
-            const positions = this.getRandomPositions(2);
-            positions.forEach(pos => {
-                player.grid[pos].revealed = true;
-                player.revealedCards.add(pos);
-            });
+            // Players must manually reveal cards - no automatic revealing
         });
         
         // Setup discard pile with top card
@@ -127,7 +122,8 @@ class SkyjoGame {
 
     getCurrentPlayer() {
         const playersList = this.getAllPlayers();
-        return playersList[this.currentPlayerIndex];
+        if (playersList.length === 0) return null;
+        return playersList[this.currentPlayerIndex] || playersList[0];
     }
 
     nextTurn() {

@@ -13,6 +13,7 @@ class SkyjoApp {
         this.currentRoomPassword = null;
         this.gameStartTime = null;
         this.timerInterval = null;
+        this.soloDrawnCard = null;
         
         this.init();
     }
@@ -237,11 +238,19 @@ class SkyjoApp {
 
         // Game screen actions
         document.getElementById('drawFromDeckBtn').addEventListener('click', () => {
-            this.socket.emit('drawCard');
+            if (this.playerId === 'solo-player') {
+                this.handleSoloCardDraw();
+            } else {
+                this.socket.emit('drawCard');
+            }
         });
 
         document.getElementById('takeDiscardBtn').addEventListener('click', () => {
-            this.socket.emit('takeDiscard');
+            if (this.playerId === 'solo-player') {
+                this.handleSoloTakeDiscard();
+            } else {
+                this.socket.emit('takeDiscard');
+            }
         });
 
         // Color picker handlers
@@ -459,16 +468,18 @@ class SkyjoApp {
             const gridDiv = document.createElement('div');
             gridDiv.className = 'other-player-grid';
             
-            player.grid.forEach(card => {
-                const cardEl = document.createElement('div');
-                cardEl.className = `card ${card.revealed ? this.getCardClass(card.value) : 'back'}`;
-                
-                if (card.revealed) {
-                    cardEl.textContent = card.value;
-                }
-                
-                gridDiv.appendChild(cardEl);
-            });
+            if (player.grid && Array.isArray(player.grid)) {
+                player.grid.forEach(card => {
+                    const cardEl = document.createElement('div');
+                    cardEl.className = `card ${card.revealed ? this.getCardClass(card.value) : 'back'}`;
+                    
+                    if (card.revealed) {
+                        cardEl.textContent = card.value;
+                    }
+                    
+                    gridDiv.appendChild(cardEl);
+                });
+            }
             
             playerDiv.appendChild(playerName);
             playerDiv.appendChild(gridDiv);
@@ -483,8 +494,14 @@ class SkyjoApp {
         const isMyTurn = this.gameState.currentPlayer?.id === this.playerId;
         const gameActive = this.gameState.gameState === 'playing';
         
-        drawBtn.disabled = !isMyTurn || !gameActive;
-        takeBtn.disabled = !isMyTurn || !gameActive || this.gameState.topDiscard === null;
+        // In solo mode, always allow actions
+        if (this.playerId === 'solo-player') {
+            drawBtn.disabled = false;
+            takeBtn.disabled = this.gameState.topDiscard === null;
+        } else {
+            drawBtn.disabled = !isMyTurn || !gameActive;
+            takeBtn.disabled = !isMyTurn || !gameActive || this.gameState.topDiscard === null;
+        }
     }
 
     handleCardDrawn(card) {
@@ -512,12 +529,32 @@ class SkyjoApp {
 
     handleCardClick(position) {
         const isMyTurn = this.gameState.currentPlayer?.id === this.playerId;
-        if (!isMyTurn) return;
+        if (!isMyTurn && this.playerId !== 'solo-player') return;
+
+        const currentPlayer = this.gameState.players.find(p => p.id === this.playerId);
+        if (!currentPlayer) return;
+
+        const card = currentPlayer.grid[position];
+        if (!card) return;
 
         // If we have a selected card, place it
         if (this.selectedCardPosition !== null || this.hasDrawnCard()) {
-            this.socket.emit('placeCard', { position });
+            if (this.playerId === 'solo-player') {
+                this.handleSoloCardPlacement(position);
+            } else {
+                this.socket.emit('placeCard', { position });
+            }
             this.disableCardPlacement();
+        } 
+        // Otherwise, if card is not revealed, reveal it (solo mode or if it's the first action)
+        else if (!card.revealed) {
+            if (this.playerId === 'solo-player') {
+                card.revealed = true;
+                this.updatePlayerGrid();
+                this.showToast(`Card revealed: ${card.value}`, 'info');
+            } else {
+                this.socket.emit('revealCard', { position });
+            }
         }
     }
 
@@ -950,17 +987,18 @@ class SkyjoApp {
         };
         
         this.playerId = 'solo-player';
+        this.startGameTimer(); // Start timer for solo mode
         this.showToast('Solo practice mode - try the game offline!', 'info');
         this.showGame();
     }
 
     generateMockGrid() {
-        // Generate a 12-card grid for practice
+        // Generate a 12-card grid for practice - no cards revealed initially
         const grid = [];
         for (let i = 0; i < 12; i++) {
             grid.push({
                 value: Math.floor(Math.random() * 15) - 2, // Random value -2 to 12
-                revealed: i < 2 // First 2 cards revealed like in real game
+                revealed: false // No cards revealed initially
             });
         }
         return grid;
@@ -995,6 +1033,56 @@ class SkyjoApp {
         if (timerElement) {
             timerElement.textContent = timeString;
         }
+    }
+
+    handleSoloCardDraw() {
+        // Generate a random card for solo mode
+        const drawnCard = Math.floor(Math.random() * 15) - 2; // Random value -2 to 12
+        this.gameState.drawPileCount--;
+        this.soloDrawnCard = drawnCard;
+        this.handleCardDrawn(drawnCard);
+    }
+
+    handleSoloTakeDiscard() {
+        if (this.gameState.topDiscard !== null) {
+            this.soloDrawnCard = this.gameState.topDiscard;
+            this.handleCardDrawn(this.gameState.topDiscard);
+            // Generate new top discard
+            this.gameState.topDiscard = Math.floor(Math.random() * 15) - 2;
+            this.updateGameHeader();
+        }
+    }
+
+    handleSoloCardPlacement(position) {
+        if (this.soloDrawnCard === null) return;
+        
+        const currentPlayer = this.gameState.players.find(p => p.id === this.playerId);
+        if (!currentPlayer) return;
+
+        // Replace the card at the position
+        const oldCard = currentPlayer.grid[position];
+        currentPlayer.grid[position] = {
+            value: this.soloDrawnCard,
+            revealed: true,
+            position: position
+        };
+
+        // Put old card on discard pile if it was revealed
+        if (oldCard.revealed) {
+            this.gameState.topDiscard = oldCard.value;
+        }
+
+        this.soloDrawnCard = null;
+        this.updateGameScreen();
+        this.showToast(`Card placed!`, 'success');
+    }
+
+    hasDrawnCard() {
+        // Check if we have a drawn card (solo mode) or selectable cards (online mode)
+        if (this.playerId === 'solo-player') {
+            return this.soloDrawnCard !== null;
+        }
+        return document.querySelector('#cardGrid .card.selectable') !== null;
     }
 }
 
