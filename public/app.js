@@ -435,6 +435,10 @@ class SkyjoApp {
         const scoreboardList = document.getElementById('scoreboardList');
         scoreboardList.innerHTML = '';
 
+        if (!this.gameState || !this.gameState.players || !Array.isArray(this.gameState.players)) {
+            return;
+        }
+
         const sortedPlayers = [...this.gameState.players].sort((a, b) => a.totalScore - b.totalScore);
 
         sortedPlayers.forEach(player => {
@@ -453,6 +457,10 @@ class SkyjoApp {
     updateOtherPlayers() {
         const otherPlayersContainer = document.getElementById('otherPlayers');
         otherPlayersContainer.innerHTML = '<h3 style="color: #fff; margin-bottom: 15px;">Other Players</h3>';
+
+        if (!this.gameState || !this.gameState.players || !Array.isArray(this.gameState.players)) {
+            return;
+        }
 
         const otherPlayers = this.gameState.players.filter(p => p.id !== this.playerId);
 
